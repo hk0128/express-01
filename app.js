@@ -26,21 +26,47 @@ app.get("/userList", async (req, res) => {
 })
 
 // 条件付き取得処理
-app.get("/userList/:id", function(req, res) {
-
+app.get("/user/", async (req, res) => {
+    const users = await prisma.user.findMany({
+        where: {
+            id: parseInt(req.query.id),
+        },
+    })
+    return res.json(users)
 })
 
 // 追加処理
-app.post("/addUser", function(req, res) {
-
+app.post("/addUser", async (req, res) => {
+    const result = await prisma.user.create({
+        data: {
+            id: parseInt(req.query.id),
+            name: req.query.name,
+            email: req.query.email
+        }
+    })
+    return res.json(result)
 })
 
-// 追加処理
-app.post("/updateUser", function(req, res) {
-
+// 更新処理
+app.put("/updateUser", async (req, res) => {
+    const result = await prisma.user.update({
+        where: {
+            id: parseInt(req.query.id),
+        },
+        data: {
+            name: req.query.name,
+            email: req.query.email
+        }
+    })
+    return res.json(result)
 })
 
 // 削除処理
-app.post("/deleteUser", function(req, res) {
-
+app.delete("/deleteUser", async (req, res) => {
+    const result = await prisma.user.deleteMany({
+        where: {
+            id: parseInt(req.query.id),
+        },
+    })
+    return res.json(result)
 })
