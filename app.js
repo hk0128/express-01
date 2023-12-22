@@ -1,8 +1,8 @@
 
 const express = require("express")
+const { PrismaClient } = require("@prisma/client")
 const bodyParser = require('body-parser')
 const app = express()
-
 app.use(bodyParser.urlencoded({ extended: true }))
 app.set('view engine', 'ejs')
 
@@ -12,11 +12,7 @@ const server = app.listen(3001, function() {
 
 /***  以下に処理を記述 ***/
 
-// サンプルデータ
-let animalList = [
-    {id: "0", name: "犬"},
-    {id: "1", name: "猫"}
-]
+const prisma = new PrismaClient();
 
 // 表示
 app.get("/", function(req, res) {
@@ -24,31 +20,27 @@ app.get("/", function(req, res) {
 })
 
 // 取得処理
-app.get("/animalList", function(req, res) {
-    res.json(animalList)
+app.get("/userList", async (req, res) => {
+    const users = await prisma.user.findMany()
+    return res.json(users)
 })
 
 // 条件付き取得処理
-app.get("/animalList/:id", function(req, res) {
-    res.json(animalList.filter(item => item.id == req.params.id))
+app.get("/userList/:id", function(req, res) {
+
 })
 
 // 追加処理
-app.post("/addAnimal", function(req, res) {
-    const newAnimalList = []
-    // idを振り直す
-    for (const [index, animal] of animalList.entries()) {
-        newAnimalList.push({id: index, name: animal['name']})
-    }
-    // 新しいアニマルを追加
-    newAnimalList.push({id: newAnimalList.length, name: req.body.name})
-    animalList = newAnimalList
+app.post("/addUser", function(req, res) {
 
-    res.render("index", {})
+})
+
+// 追加処理
+app.post("/updateUser", function(req, res) {
+
 })
 
 // 削除処理
-app.post("/deleteAnimal", function(req, res) {
-    animalList = animalList.filter((item) => item.id != req.body.id)
-    res.render("index", {})
+app.post("/deleteUser", function(req, res) {
+
 })
